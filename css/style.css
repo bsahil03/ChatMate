@@ -1,0 +1,97 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark gray for text */
+    margin: 0;
+    padding: 0;
+  }
+ 
+  
+  .timestamp {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-left: 5px;
+  }
+  
+  .status {
+    font-size: 0.8rem;
+    color: green;
+    margin-left: 5px;
+  }
+  
+  .header {
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .header img.logo {
+    height: 60px;
+  }
+  
+  .chat-container {
+    height: 70vh;
+    overflow-y: auto;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    background-color: #ffffff; /* White background */
+  }
+  
+  .message {
+    margin: 10px 0;
+    padding: 10px 20px;
+    border-radius: 20px;
+    max-width: 60%;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .message.right {
+    background-color: #d1e7dd; /* Light green for user messages */
+    color: #0f5132; /* Dark green for text */
+    margin-left: auto;
+    text-align: right;
+  }
+  
+  .message.left {
+    background-color: #f8d7da; /* Light red for others' messages */
+    color: #842029; /* Dark red for text */
+    margin-right: auto;
+    text-align: left;
+  }
+  
+  .message.center {
+    background-color: #e2e3e5; /* Light gray for system messages */
+    color: #6c757d; /* Dark gray for text */
+    margin: 10px auto;
+    text-align: center;
+    max-width: 100%;
+  }
+  
+  #messageInp {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
