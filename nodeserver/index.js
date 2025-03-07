@@ -1,4 +1,4 @@
-const io = require('socket.io')(4000, {
+const io = require("socket.io")(4000, {
   cors: {
     origin: "http://localhost:5500",
     methods: ["GET", "POST"],
@@ -6,31 +6,59 @@ const io = require('socket.io')(4000, {
 });
 
 const users = {};
+const typingUsers = new Set();
 
-io.on('connection', socket => {
-  socket.on('new-user-joined', name => {
-    users[socket.id] = name;
-    socket.broadcast.emit('user-joined', name);
+io.on("connection", (socket) => {
+  socket.on("check-username", (name, callback) => {
+    const isAvailable = !Object.values(users).includes(name);
+    callback(isAvailable);
   });
 
-  socket.on('send', data => {
-    const messageId = Math.random().toString(36).substring(7);
-    const username = users[socket.id] || 'Anonymous';
-    socket.broadcast.emit('receive', { ...data, name: username, messageId });
+  socket.on("new-user-joined", (name) => {
+    if (!Object.values(users).includes(name)) {
+      users[socket.id] = name;
+      socket.broadcast.emit("user-joined", name);
+    } else {
+      socket.emit("username-taken", "Username already taken! Try another one.");
+    }
   });
 
-  socket.on('mark-read', messageId => {
-    socket.broadcast.emit('seen', messageId);
+  socket.on("send", (data) => {
+    const username = users[socket.id] || "Anonymous";
+    const timestamp = new Date().toLocaleTimeString();
+    socket.broadcast.emit("receive", {
+      name: username,
+      message: data.message,
+      timestamp,
+    });
+
+    // Mark message as seen when received by recipient
+    setTimeout(() => {
+      socket.emit("message-seen", { message: data.message, timestamp });
+    }, 1000);
   });
 
-  socket.on('typing', name => {
-    socket.broadcast.emit('typing', name);
+  socket.on("typing", (username) => {
+    typingUsers.add(username);
+    socket.broadcast.emit(
+      "user-typing",
+      Array.from(typingUsers).join(", ") + " is typing..."
+    );
   });
 
-  socket.on('disconnect', () => {
-    const username = users[socket.id];
-    if (username) {
-      socket.broadcast.emit('left', username);
+  socket.on("stop-typing", (username) => {
+    typingUsers.delete(username);
+    socket.broadcast.emit(
+      "user-typing",
+      typingUsers.size > 0
+        ? Array.from(typingUsers).join(", ") + " is typing..."
+        : ""
+    );
+  });
+
+  socket.on("disconnect", () => {
+    if (users[socket.id]) {
+      socket.broadcast.emit("left", users[socket.id]);
       delete users[socket.id];
     }
   });
