@@ -1,16 +1,34 @@
 require("dotenv").config(); // Load environment variables
+const express = require("express");
+const http = require("http");
+const cors = require("cors");
+const { Server } = require("socket.io");
 
-const io = require("socket.io")(process.env.PORT || 4000, {
+const app = express();
+const server = http.createServer(app); // Create an HTTP server
+const PORT = process.env.PORT || 4000;
+
+// CORS Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || "https://bsahil03.github.io", // Correct frontend URL
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
+const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5500", // Update this with your frontend URL
+    origin: process.env.CLIENT_URL || "https://bsahil03.github.io",
     methods: ["GET", "POST"],
-  },
+    credentials: true
+  }
 });
 
 const users = {};
 const typingUsers = new Set();
 
 io.on("connection", (socket) => {
+  console.log("New user connected");
+
   socket.on("check-username", (name, callback) => {
     const isAvailable = !Object.values(users).includes(name);
     callback(isAvailable);
@@ -65,4 +83,6 @@ io.on("connection", (socket) => {
   });
 });
 
-console.log(`Socket.io server running on port ${process.env.PORT || 4000}`);
+server.listen(PORT, () => {
+  console.log(`Socket.io server running on port ${PORT}`);
+});
