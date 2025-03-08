@@ -90,7 +90,7 @@ const appendMessage = (message, position, timestamp) => {
 };
 
 socket.on("receive", (data) => {
-  appendMessage(`${data.name}: ${data.message}`, "left");
+  appendMessage(`${data.name}: ${data.message}`, "left", data.timestamp);
 });
 
 socket.on("user-joined", (name) => {
