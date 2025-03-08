@@ -1,4 +1,4 @@
-const socket = io("https://chatmate-inxw.onrender.com/");
+const socket = io("https://chatmate-inxw.onrender.com");
 
 const messageBox = document.querySelector(".msg-container");
 const messageForm = document.getElementById("send-container");
