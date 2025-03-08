@@ -10,14 +10,14 @@ const PORT = process.env.PORT || 4000;
 
 // CORS Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || "https://chatmate03.web.app/", // Correct frontend URL
+  origin: process.env.CLIENT_URL || "https://chatmate03.web.app", // Correct frontend URL
   methods: ["GET", "POST"],
   credentials: true
 }));
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "https://chatmate03.web.app/",
+    origin: process.env.CLIENT_URL || "https://chatmate03.web.app",
     methods: ["GET", "POST"],
     credentials: true
   }
