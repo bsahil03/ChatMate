@@ -1,6 +1,8 @@
-const io = require("socket.io")(4000, {
+require("dotenv").config(); // Load environment variables
+
+const io = require("socket.io")(process.env.PORT || 4000, {
   cors: {
-    origin: "http://localhost:5500",
+    origin: process.env.CLIENT_URL || "http://localhost:5500", // Update this with your frontend URL
     methods: ["GET", "POST"],
   },
 });
@@ -32,7 +34,6 @@ io.on("connection", (socket) => {
       timestamp,
     });
 
-    // Mark message as seen when received by recipient
     setTimeout(() => {
       socket.emit("message-seen", { message: data.message, timestamp });
     }, 1000);
@@ -63,3 +64,5 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+console.log(`Socket.io server running on port ${process.env.PORT || 4000}`);
