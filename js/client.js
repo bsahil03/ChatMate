@@ -64,9 +64,7 @@ socket.on("username-taken", (message) => {
 
 const startChat = (name) => {
   username = name;
-  document.getElementById(
-    "user-header"
-  ).innerText = `Logged in as: ${username}`;
+  document.getElementById("user-header").innerText = `Logged in as: ${username}`;
   document.getElementById("login-container").classList.add("d-none");
   document.getElementById("chat-container").classList.remove("d-none");
   socket.emit("new-user-joined", username);
@@ -77,12 +75,16 @@ logoutBtn.addEventListener("click", () => {
   location.reload();
 });
 
+const formatTime = (date) => {
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+};
+
 const appendMessage = (message, position, timestamp) => {
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", position);
   messageElement.innerHTML = `
     <div class="message-text">${message}</div>
-    <small class="timestamp">${timestamp}</small>
+    <small class="timestamp" style="float: right; margin-left: 10px;">${timestamp}</small>
   `;
   messageBox.append(messageElement);
   if (position === "left") notificationSound.play();
@@ -90,14 +92,14 @@ const appendMessage = (message, position, timestamp) => {
 };
 
 socket.on("receive", (data) => {
-  appendMessage(`${data.name}: ${data.message}`, "left", data.timestamp);
+  appendMessage(`${data.name}: ${data.message}`, "left", formatTime(new Date()));
 });
 
 socket.on("user-joined", (name) => {
   appendMessage(
     `${name} joined the chat`,
     "center",
-    new Date().toLocaleTimeString()
+    formatTime(new Date())
   );
 });
 
@@ -105,7 +107,7 @@ socket.on("left", (name) => {
   appendMessage(
     `${name} left the chat`,
     "center",
-    new Date().toLocaleTimeString()
+    formatTime(new Date())
   );
 });
 
@@ -124,7 +126,7 @@ socket.on("user-typing", (message) => {
 messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const message = messageInput.value;
-  const timestamp = new Date().toLocaleTimeString();
+  const timestamp = formatTime(new Date());
   socket.emit("send", { message, username, timestamp });
   appendMessage(`You: ${message}`, "right", timestamp);
   messageInput.value = "";
