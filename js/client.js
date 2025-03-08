@@ -64,7 +64,9 @@ socket.on("username-taken", (message) => {
 
 const startChat = (name) => {
   username = name;
-  document.getElementById("user-header").innerText = `Logged in as: ${username}`;
+  document.getElementById(
+    "user-header"
+  ).innerText = `Logged in as: ${username}`;
   document.getElementById("login-container").classList.add("d-none");
   document.getElementById("chat-container").classList.remove("d-none");
   socket.emit("new-user-joined", username);
@@ -76,7 +78,11 @@ logoutBtn.addEventListener("click", () => {
 });
 
 const formatTime = (date) => {
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 };
 
 const appendMessage = (message, position, timestamp) => {
@@ -92,23 +98,19 @@ const appendMessage = (message, position, timestamp) => {
 };
 
 socket.on("receive", (data) => {
-  appendMessage(`${data.name}: ${data.message}`, "left", formatTime(new Date()));
+  appendMessage(
+    `${data.name}: ${data.message}`,
+    "left",
+    formatTime(new Date())
+  );
 });
 
 socket.on("user-joined", (name) => {
-  appendMessage(
-    `${name} joined the chat`,
-    "center",
-    formatTime(new Date())
-  );
+  appendMessage(`${name} joined the chat`, "center", formatTime(new Date()));
 });
 
 socket.on("left", (name) => {
-  appendMessage(
-    `${name} left the chat`,
-    "center",
-    formatTime(new Date())
-  );
+  appendMessage(`${name} left the chat`, "center", formatTime(new Date()));
 });
 
 messageInput.addEventListener("input", () => {
