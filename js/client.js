@@ -77,12 +77,12 @@ logoutBtn.addEventListener("click", () => {
   location.reload();
 });
 
-const appendMessage = (message, position, timestamp, seen = false) => {
+const appendMessage = (message, position, timestamp) => {
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", position);
   messageElement.innerHTML = `
-    <div>${message}</div>
-    <small class="timestamp">${timestamp} ${seen ? "✓ Seen" : ""}</small>
+    <div class="message-text">${message}</div>
+    <small class="timestamp">${timestamp}</small>
   `;
   messageBox.append(messageElement);
   if (position === "left") notificationSound.play();
@@ -90,12 +90,7 @@ const appendMessage = (message, position, timestamp, seen = false) => {
 };
 
 socket.on("receive", (data) => {
-  appendMessage(`${data.name}: ${data.message}`, "left", data.timestamp);
-});
-
-socket.on("message-seen", (data) => {
-  const messages = document.querySelectorAll(".message.right .timestamp");
-  messages[messages.length - 1].innerHTML = `${data.timestamp} ✓ Seen`;
+  appendMessage(`${data.name}: ${data.message}`, "left");
 });
 
 socket.on("user-joined", (name) => {
@@ -130,7 +125,7 @@ messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const message = messageInput.value;
   const timestamp = new Date().toLocaleTimeString();
-  socket.emit("send", { message, username });
-  appendMessage(`You: ${message}`, "right", timestamp, false);
+  socket.emit("send", { message, username, timestamp });
+  appendMessage(`You: ${message}`, "right", timestamp);
   messageInput.value = "";
 });
